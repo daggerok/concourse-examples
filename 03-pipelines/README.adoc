@@ -7,27 +7,29 @@
 ----
 docker-compose up
 fly -t lite login -c http://0.0.0.0:8080 # username: concourse, password: changeme
-fly -t lite set-pipeline -p 03 e -c uname-task.yml
-fly -t lite unpause-pipeline -p 03
 ----
 
 == playground
 
-.create task with input
+.create pipeline.yml
 [source,bash]
 ----
-touch task-with-input-requires.yml
+touch pipeline.yml
 ----
 
-.task-with-input-requires.yml
+.pipeline.yml
 [source,yaml]
 ----
+
 ----
 
-.try put some input
+.try out!
 [source,bash]
 ----
-fly -t lite e -c task-with-input-requires.yml -i base_dir=.
+fly -t lite set-pipeline -c pipeline.yml -p 03
+fly -t lite unpause-pipeline -p 03 # by default pipelines creates paused
 ----
+
+go to UI and click on plus to start pipeline
 
 . link:https://www.youtube.com/watch?v=m_KpkupKITc[watch on youtube]
