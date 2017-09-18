@@ -1,5 +1,7 @@
 = getting started
 
+== setup
+
 .spinup docker
 [source,bash]
 ----
@@ -128,6 +130,8 @@ password: changeme
 target saved
 ----
 
+== playground
+
 .hello world job
 [source,bash]
 ----
@@ -224,7 +228,6 @@ jobs:
 
 go to UI and click on + to execute pipeline. you should be able to see such output:
 
-[source,bash]
 ----
 hello-world-pipeline #1
 started	2m 29s ago
@@ -266,6 +269,8 @@ Successfully pulled ubuntu@sha256:2b9285d3e340ae9d4297f83fed6a9563493945935fc787
 
 Hello, daggerok!
 ----
+
+== add another into pipe
 
 .contunie with navi-pipeline example...
 [source,bash]
@@ -360,6 +365,8 @@ again, go to UI and check it
 touch execution-pipeline.yml
 ----
 
+== tasks execution
+
 .execution-pipeline.yml
 [source,yml]
 ----
@@ -450,7 +457,7 @@ Linux 2597b67c-ae0f-42b7-46ff-3e81d09f751e 4.9.46-moby #1 SMP Thu Sep 7 02:53:42
 succeeded
 ----
 
-read more:
+== read more
 
 . link:https://concourse.ci/docker-repository.html[documentation]
 . link:https://concourse.ci/hello-world.html[hello-world]

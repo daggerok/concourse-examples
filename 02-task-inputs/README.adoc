@@ -1,0 +1,116 @@
+= task inputs
+
+== prepare
+
+.required environment variable
+[source,bash]
+----
+docker-compose up
+# ...
+
+
+fly -t lite login -c http://0.0.0.0:8080
+logging in to team 'main'
+# ..,
+username: concourse
+password: changeme
+
+
+fly -t lite set-pipeline -p 02 e -c uname-task.yml
+# output:
+apply configuration? [yN]: y
+pipeline created!
+you can view your pipeline here: http://0.0.0.0:8080/teams/main/pipelines/02
+
+the pipeline is currently paused. to unpause, either:
+  - run the unpause-pipeline command
+  - click play next to the pipeline in the web ui
+
+
+fly -t lite unpause-pipeline -p 02
+unpaused '02'
+----
+
+== playground
+
+.create task with input
+[source,bash]
+----
+touch task-with-input-requires.yml
+----
+
+.task-with-input-requires.yml
+[source,yaml]
+----
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: ubuntu, tag: "14.04"}
+
+inputs:
+- name: task-input
+
+run:
+  path: ls -lah
+  args: [task-input]
+----
+
+.input folder of things...
+[source,bash]
+----
+fly -t lite e task-with-input-requires.yml -h
+# ...
+      -i, --input=NAME=PATH             An input to provide to the task (can be specified multiple times)
+      -j, --inputs-from=PIPELINE/JOB    A job to base the inputs on
+# ...
+----
+
+.try put some input
+[source,bash]
+----
+fly -t lite e -c task-with-input-requires.yml -i base_dir=.
+executing build 1 at http://0.0.0.0:8080/builds/1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 10240    0 10240    0     0  1047k      0 --:--:-- --:--:-- --:--:-- 1111k
+initializing
+Pulling busybox@sha256:99ccecf3da28a93c063d5dddcdf69aeed44826d0db219aabc3d5178d47649dfa...
+sha256:99ccecf3da28a93c063d5dddcdf69aeed44826d0db219aabc3d5178d47649dfa: Pulling from library/busybox
+03b1be98f3f9: Pulling fs layer
+03b1be98f3f9: Verifying Checksum
+03b1be98f3f9: Download complete
+03b1be98f3f9: Pull complete
+Digest: sha256:99ccecf3da28a93c063d5dddcdf69aeed44826d0db219aabc3d5178d47649dfa
+Status: Downloaded newer image for busybox@sha256:99ccecf3da28a93c063d5dddcdf69aeed44826d0db219aabc3d5178d47649dfa
+
+Successfully pulled busybox@sha256:99ccecf3da28a93c063d5dddcdf69aeed44826d0db219aabc3d5178d47649dfa.
+
+running ls -lah the_dir
+total 28
+drwxr-xr-x    1 root     root        4.0K Sep 18 21:38 .
+drwxr-xr-x    3 root     root        4.0K Sep 18 21:38 ..
+-rw-r--r--    1 502      staff       2.4K Sep 18 21:38 README.adoc
+-rw-r--r--    1 502      staff       1.1K Sep 18 21:30 docker-compose.yml
+drwxr-xr-x    4 502      staff       4.0K Sep 18 21:38 keys
+-rw-r--r--    1 502      staff        160 Sep 18 21:38 task-with-input-requires.yml
+-rw-r--r--    1 502      staff        136 Sep 18 21:02 uname-task.yml
+succeeded
+----
+
+== template
+
+.descr
+[source,bash]
+----
+----
+
+.file.yml
+[source,yml]
+----
+----
+
+read more:
+
+. link:https://www.youtube.com/watch?v=m_KpkupKITc[watch on youtube]
