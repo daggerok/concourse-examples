@@ -352,6 +352,48 @@ configuration updated
 
 again, go to UI and check it
 
+.contunie with other examples...
+[source,bash]
+----
+touch execution-pipeline.yml
+----
+
+.execution-pipeline.yml
+[source,yml]
+----
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: busybox}
+
+run:
+  path: echo
+  args: ["ololo", "trololo"]
+----
+
+.execution
+[source,bash]
+----
+fly -t lite execute -c execution-pipeline.yml
+executing build 21 at http://0.0.0.0:8080/builds/21
+initializing
+Pulling busybox@sha256:99ccecf3da28a93c063d5dddcdf69aeed44826d0db219aabc3d5178d47649dfa...
+sha256:99ccecf3da28a93c063d5dddcdf69aeed44826d0db219aabc3d5178d47649dfa: Pulling from library/busybox
+03b1be98f3f9: Pulling fs layer
+03b1be98f3f9: Download complete
+03b1be98f3f9: Pull complete
+Digest: sha256:99ccecf3da28a93c063d5dddcdf69aeed44826d0db219aabc3d5178d47649dfa
+Status: Downloaded newer image for busybox@sha256:99ccecf3da28a93c063d5dddcdf69aeed44826d0db219aabc3d5178d47649dfa
+
+Successfully pulled busybox@sha256:99ccecf3da28a93c063d5dddcdf69aeed44826d0db219aabc3d5178d47649dfa.
+
+running echo ololo trololo
+ololo trololo
+succeeded
+----
+
 read more:
 
 . link:https://concourse.ci/docker-repository.html[documentation]
