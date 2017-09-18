@@ -1,0 +1,33 @@
+= pipeline
+
+== prepare
+
+.required environment variable
+[source,bash]
+----
+docker-compose up
+fly -t lite login -c http://0.0.0.0:8080 # username: concourse, password: changeme
+fly -t lite set-pipeline -p 03 e -c uname-task.yml
+fly -t lite unpause-pipeline -p 03
+----
+
+== playground
+
+.create task with input
+[source,bash]
+----
+touch task-with-input-requires.yml
+----
+
+.task-with-input-requires.yml
+[source,yaml]
+----
+----
+
+.try put some input
+[source,bash]
+----
+fly -t lite e -c task-with-input-requires.yml -i base_dir=.
+----
+
+. link:https://www.youtube.com/watch?v=m_KpkupKITc[watch on youtube]

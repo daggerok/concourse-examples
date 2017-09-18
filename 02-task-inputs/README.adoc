@@ -11,7 +11,7 @@ docker-compose up
 
 fly -t lite login -c http://0.0.0.0:8080
 logging in to team 'main'
-# ..,
+# ...
 username: concourse
 password: changeme
 
@@ -97,18 +97,6 @@ drwxr-xr-x    4 502      staff       4.0K Sep 18 21:38 keys
 -rw-r--r--    1 502      staff        160 Sep 18 21:38 task-with-input-requires.yml
 -rw-r--r--    1 502      staff        136 Sep 18 21:02 uname-task.yml
 succeeded
-----
-
-== template
-
-.descr
-[source,bash]
-----
-----
-
-.file.yml
-[source,yml]
-----
 ----
 
 read more:
