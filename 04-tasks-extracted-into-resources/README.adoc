@@ -1,5 +1,9 @@
 = tasks extracted into resources
 
+how to avoid long pipeline files
+
+splitting resources into separate files out from pipeline.yml
+
 == prepare
 
 .required environment variable
@@ -7,7 +11,7 @@
 ----
 docker-compose up
 fly -t lite login -c http://0.0.0.0:8080 # username: concourse, password: changeme
-fly -t lite set-pipeline -c pipeline.yml -p 04
+fly -t lite set-pipeline -c composed-pipeline.yml -p 04
 fly -t lite unpause-pipeline -p 04 # by default pipelines creates paused
 ----
 
