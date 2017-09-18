@@ -1,0 +1,350 @@
+= getting started
+
+.spinup docker
+[source,bash]
+----
+vim docker-compose.yml
+...
+version: '3'
+
+services:
+  concourse-db:
+    image: postgres:9.5
+    environment:
+      POSTGRES_DB: concourse
+      POSTGRES_USER: concourse
+      POSTGRES_PASSWORD: changeme
+      PGDATA: /database
+
+  concourse-web:
+    image: concourse/concourse
+    links: [concourse-db]
+    command: web
+    depends_on: [concourse-db]
+    ports: ["8080:8080"]
+    volumes: ["./keys/web:/concourse-keys"]
+    restart: unless-stopped # required so that it retries until conocurse-db comes up
+    environment:
+      CONCOURSE_BASIC_AUTH_USERNAME: concourse
+      CONCOURSE_BASIC_AUTH_PASSWORD: changeme
+      CONCOURSE_EXTERNAL_URL: "${CONCOURSE_EXTERNAL_URL}"
+      CONCOURSE_POSTGRES_HOST: concourse-db
+      CONCOURSE_POSTGRES_USER: concourse
+      CONCOURSE_POSTGRES_PASSWORD: changeme
+      CONCOURSE_POSTGRES_DATABASE: concourse
+
+  concourse-worker:
+    image: concourse/concourse
+    privileged: true
+    links: [concourse-web]
+    depends_on: [concourse-web]
+    command: worker
+    volumes: ["./keys/worker:/concourse-keys"]
+    environment:
+      CONCOURSE_TSA_HOST: concourse-web
+...
+:wq!
+----
+
+.generate keys
+[source,bash]
+----
+mkdir -p keys/web keys/worker
+
+ssh-keygen -t rsa -f ./keys/web/tsa_host_key -N ''
+ssh-keygen -t rsa -f ./keys/web/session_signing_key -N ''
+
+ssh-keygen -t rsa -f ./keys/worker/worker_key -N ''
+
+cp ./keys/worker/worker_key.pub ./keys/web/authorized_worker_keys
+cp ./keys/web/tsa_host_key.pub ./keys/worker
+----
+
+.expose public external
+[source,bash]
+----
+export CONCOURSE_EXTERNAL_URL=http://0.0.0.0:8080
+----
+
+.go!
+[source,bash]
+----
+docker-compose up
+Creating network "01gettingstarted_default" with the default driver
+Pulling concourse-db (postgres:9.5)...
+9.5: Pulling from library/postgres
+aa18ad1a0d33: Pull complete
+417e25dde31b: Pull complete
+2f2dab8762cf: Pull complete
+fa5dda99857a: Pull complete
+bab771f0785f: Pull complete
+2297bb8ef4e1: Pull complete
+f9a118046c73: Pull complete
+4345f14855c4: Pull complete
+d478c36589ec: Pull complete
+b5cdfd9f56e3: Pull complete
+1416a8d1fee7: Pull complete
+ef2caa52688e: Pull complete
+Digest: sha256:5212f2ff719df2c010cf22b59e47d8d69329bbcb2340ce90847ec304e935d1db
+Status: Downloaded newer image for postgres:9.5
+Pulling concourse-web (concourse/concourse:latest)...
+latest: Pulling from concourse/concourse
+d5c6f90da05d: Pull complete
+1300883d87d5: Pull complete
+c220aa3cfc1b: Pull complete
+2e9398f099dc: Pull complete
+dc27a084064f: Pull complete
+3c79c2e877f4: Pull complete
+898415354f07: Pull complete
+5acc04de8ec6: Pull complete
+Digest: sha256:b4a7ee81a310cc20c7dc077ffd7b647e1cb1dfff0bc4fb6d6c01ae6672e55d35
+Status: Downloaded newer image for concourse/concourse:latest
+Creating 01gettingstarted_concourse-db_1 ...
+Creating 01gettingstarted_concourse-db_1 ... done
+Creating 01gettingstarted_concourse-web_1 ...
+Creating 01gettingstarted_concourse-web_1 ... done
+Creating 01gettingstarted_concourse-worker_1 ...
+Creating 01gettingstarted_concourse-worker_1 ... done
+Attaching to 01gettingstarted_concourse-db_1, 01gettingstarted_concourse-web_1, 01gettingstarted_concourse-worker_1
+----
+
+.login
+[source,bash]
+----
+fly -t lite login -c http://0.0.0.0:8080
+logging in to team 'main'
+
+WARNING:
+
+fly version (3.0.1) is out of sync with the target (3.4.1). to sync up, run the following:
+
+    fly -t lite sync
+
+username: concourse
+password: changeme
+
+target saved
+----
+
+.hello world job
+[source,bash]
+----
+touch hello-world-pipeline.yml
+----
+
+.hello-world-pipeline.yml
+[source,yml]
+----
+jobs:
+- name: hello-world-pipeline
+  plan:
+  - task: say-hello
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: ubuntu}
+      run:
+        path: echo
+        args: ["Hello, daggerok!"]
+----
+
+.create pipeline
+[source,bash]
+----
+fly -t lite set-pipeline -p hello-world-pipeline -c hello-world-pipeline.yml
+----
+
+.output
+[source,yml]
+----
+jobs:
+  job hello-world-pipeline has been added:
+    name: hello-world-pipeline
+    plan:
+    - task: say-hello
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ubuntu
+        run:
+          path: echo
+          args:
+          - Hello, daggerok!
+          dir: ""
+
+apply configuration? [yN]: y
+pipeline created!
+you can view your pipeline here: http://0.0.0.0:8080/teams/main/pipelines/hello-world-pipeline
+
+the pipeline is currently paused. to unpause, either:
+  - run the unpause-pipeline command
+  - click play next to the pipeline in the web ui
+----
+
+.unpause pipeline
+[source,bash]
+----
+fly -t lite unpause-pipeline -p hello-world-pipeline
+unpaused 'hello-world-pipeline'
+----
+
+.fetch current configuration
+[source,bash]
+----
+fly -t lite get-pipeline -p hello-world-pipeline
+----
+
+.output
+[source,yml]
+----
+groups: []
+resources: []
+resource_types: []
+jobs:
+- name: hello-world-pipeline
+  plan:
+  - task: say-hello
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: ubuntu
+      run:
+        path: echo
+        args:
+        - Hello, daggerok!
+        dir: ""
+----
+
+go to UI and click on + to execute pipeline. you should be able to see such output:
+
+[source,bash]
+----
+hello-world-pipeline #1
+started	2m 29s ago
+finished	1m 58s ago
+duration	31s
+1
+preparing build
+checking pipeline is not paused
+checking job is not paused
+waiting for a suitable set of input versions
+checking max-in-flight is not reached
+say-hello
+Pulling ubuntu@sha256:2b9285d3e340ae9d4297f83fed6a9563493945935fc787e98cc32a69f5687641...
+sha256:2b9285d3e340ae9d4297f83fed6a9563493945935fc787e98cc32a69f5687641: Pulling from library/ubuntu
+d5c6f90da05d: Pulling fs layer
+bbbe761fcb56: Pulling fs layer
+7afa5ede606f: Pulling fs layer
+f6b7253b56f4: Pulling fs layer
+2b8db33536d4: Pulling fs layer
+f6b7253b56f4: Waiting
+2b8db33536d4: Waiting
+bbbe761fcb56: Verifying Checksum
+bbbe761fcb56: Download complete
+7afa5ede606f: Download complete
+2b8db33536d4: Verifying Checksum
+2b8db33536d4: Download complete
+f6b7253b56f4: Download complete
+d5c6f90da05d: Verifying Checksum
+d5c6f90da05d: Download complete
+d5c6f90da05d: Pull complete
+bbbe761fcb56: Pull complete
+7afa5ede606f: Pull complete
+f6b7253b56f4: Pull complete
+2b8db33536d4: Pull complete
+Digest: sha256:2b9285d3e340ae9d4297f83fed6a9563493945935fc787e98cc32a69f5687641
+Status: Downloaded newer image for ubuntu@sha256:2b9285d3e340ae9d4297f83fed6a9563493945935fc787e98cc32a69f5687641
+
+Successfully pulled ubuntu@sha256:2b9285d3e340ae9d4297f83fed6a9563493945935fc787e98cc32a69f5687641.
+
+Hello, daggerok!
+----
+
+.contunie with navi-pipeline example...
+[source,bash]
+----
+touch navi-pipeline.yml
+----
+
+.navi-pipeline.yml
+[source,yml]
+----
+resources:
+- name: every-1m
+  type: time
+  source: {interval: 1m}
+
+jobs:
+- name: navi-pipeline
+  plan:
+  - get: every-1m
+    trigger: true
+  - task: annoy
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: ubuntu}
+      run:
+        path: echo
+        args: ["hey, y0!"]
+----
+
+touch navi-pipeline.yml
+----
+fly -t lite set-pipeline -p hello-world-pipeline -c navi-pipeline.yml
+resources:
+  resource every-1m has been added:
+    name: every-1m
+    type: time
+    source:
+      interval: 1m
+
+jobs:
+  job hello-world-pipeline has been removed:
+    name: hello-world-pipeline
+    plan:
+    - task: say-hello
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ubuntu
+        run:
+          path: echo
+          args:
+          - Hello, daggerok!
+          dir: ""
+
+  job navi-pipeline has been added:
+    name: navi-pipeline
+    plan:
+    - get: every-1m
+      trigger: true
+    - task: annoy
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ubuntu
+        run:
+          path: echo
+          args:
+          - hey, y0!
+          dir: ""
+
+apply configuration? [yN]: y
+configuration updated
+----
+
+read more:
+
+. link:https://concourse.ci/docker-repository.html[documentation]
+. link:https://concourse.ci/hello-world.html[hello-world]
