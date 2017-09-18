@@ -1,4 +1,4 @@
-= pipeline
+= tasks extracted into resources
 
 == prepare
 
@@ -7,6 +7,8 @@
 ----
 docker-compose up
 fly -t lite login -c http://0.0.0.0:8080 # username: concourse, password: changeme
+fly -t lite set-pipeline -c pipeline.yml -p 04
+fly -t lite unpause-pipeline -p 04 # by default pipelines creates paused
 ----
 
 == playground
@@ -14,16 +16,13 @@ fly -t lite login -c http://0.0.0.0:8080 # username: concourse, password: change
 .create pipeline.yml
 [source,bash]
 ----
-vim pipeline.yml
+# TODO
 ----
 
-.try out!
-[source,bash]
+.pipeline.yml
+[source,yaml]
 ----
-fly -t lite set-pipeline -c pipeline.yml -p 03
-fly -t lite unpause-pipeline -p 03 # by default pipelines creates paused
+# TODO
 ----
-
-go to UI and click on plus to start pipeline
 
 . link:https://www.youtube.com/watch?v=m_KpkupKITc[watch on youtube]
