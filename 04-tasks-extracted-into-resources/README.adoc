@@ -6,6 +6,26 @@ splitting resources into separate files out from pipeline.yml
 
 == prepare
 
+let's say we have this big pipeline definition
+
+.composed-pipeline.yml
+[source,yaml]
+----
+jobs:
+- name: pipeline
+  public: true
+  plan:
+  - task: hola
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: ubuntu}
+      run:
+        path: echo
+        args: [who-hoo!!!]
+----
+
 .required environment variable
 [source,bash]
 ----
@@ -17,16 +37,50 @@ fly -t lite unpause-pipeline -p 04 # by default pipelines creates paused
 
 == playground
 
-.create pipeline.yml
+and we wanna do some decomposition of our pipelines to split it in logic reusable blocks
+
+.create decomposed-pipeline.yml and decomposed-resource.yml files
 [source,bash]
 ----
-# TODO
+touch decomposed-pipeline.yml decomposed-resource.yml
 ----
 
-.pipeline.yml
+.decomposed-pipeline.yml
 [source,yaml]
 ----
-# TODO
+resources:
+- name: pipeline-resources
+  type: git
+  source:
+    uri: https://github.com/daggerok/concourse-examples.git
+jobs:
+- name: pipeline
+  public: true
+  plan:
+  - get: pipeline-resources
+  - task: hola
+    file: pipeline-resources/04-tasks-extracted-into-resources/decomposed-resource.yml
 ----
 
+.decomposed-resource.yml
+[source,yaml]
+----
+platform: linux
+image_resource:
+  type: docker-image
+  source: {repository: ubuntu}
+run:
+  path: echo
+  args: [who-hoo!]
+----
+
+.now apply pipeline updates via patch
+[source,bash]
+----
+fly -t lite set-pipeline -c decomposed-pipeline.yml -p 04
+----
+
+check web UI
+
 . link:https://www.youtube.com/watch?v=m_KpkupKITc[watch on youtube]
+. link:https://github.com/concourse/concourse/issues/815#issuecomment-330374854[github issue (SOLVED)]
