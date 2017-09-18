@@ -1,0 +1,31 @@
+= view job output
+
+== prepare
+
+----
+
+.required environment variable
+[source,bash]
+----
+docker-compose up
+fly -t lite login -c http://0.0.0.0:8080 # username: concourse, password: changeme
+fly -t lite set-pipeline -c decomposed-pipeline.yml -p 05
+----
+
+== playground
+
+[source,bash]
+----
+fly -t lite watch -j 05/pipeline # $pipelineName/$jobName
+error: job has no builds
+
+fly -t lite unpause-pipeline -p 05 # and clic on plus in web UI, and then
+
+fly -t lite watch -j 05/pipeline # $pipelineName/$jobName
+initializing
+running echo who-hoo!
+who-hoo!
+succeeded
+----
+
+. link:https://www.youtube.com/watch?v=m_KpkupKITc[watch on youtube]
