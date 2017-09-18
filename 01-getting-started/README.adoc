@@ -4,7 +4,11 @@
 [source,bash]
 ----
 vim docker-compose.yml
-...
+----
+
+.spinup docker
+[source,yml]
+----
 version: '3'
 
 services:
@@ -42,8 +46,6 @@ services:
     volumes: ["./keys/worker:/concourse-keys"]
     environment:
       CONCOURSE_TSA_HOST: concourse-web
-...
-:wq!
 ----
 
 .generate keys
@@ -394,7 +396,62 @@ ololo trololo
 succeeded
 ----
 
+let say we need ubuntu 14.04
+
+.uname-task.yml
+[source,yml]
+----
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: ubuntu, tag: "14.04"}
+
+run:
+  path: uname
+  args: ["-a"]
+----
+
+.execution of uname-task.yml pipeline
+[source,bash]
+----
+fly -t lite execute -c uname-task.yml
+executing build 34 at http://0.0.0.0:8080/builds/34
+initializing
+Pulling ubuntu@sha256:ccedd292ac50d1045bd1351a30b1550f10e14f17350b2a43267d8740ca919ae0...
+sha256:ccedd292ac50d1045bd1351a30b1550f10e14f17350b2a43267d8740ca919ae0: Pulling from library/ubuntu
+bae382666908: Pulling fs layer
+29ede3c02ff2: Pulling fs layer
+da4e69f33106: Pulling fs layer
+8d43e5f5d27f: Pulling fs layer
+b0de1abb17d6: Pulling fs layer
+b0de1abb17d6: Waiting
+da4e69f33106: Download complete
+29ede3c02ff2: Download complete
+8d43e5f5d27f: Verifying Checksum
+8d43e5f5d27f: Download complete
+b0de1abb17d6: Verifying Checksum
+b0de1abb17d6: Download complete
+bae382666908: Verifying Checksum
+bae382666908: Download complete
+bae382666908: Pull complete
+29ede3c02ff2: Pull complete
+da4e69f33106: Pull complete
+8d43e5f5d27f: Pull complete
+b0de1abb17d6: Pull complete
+Digest: sha256:ccedd292ac50d1045bd1351a30b1550f10e14f17350b2a43267d8740ca919ae0
+Status: Downloaded newer image for ubuntu@sha256:ccedd292ac50d1045bd1351a30b1550f10e14f17350b2a43267d8740ca919ae0
+
+Successfully pulled ubuntu@sha256:ccedd292ac50d1045bd1351a30b1550f10e14f17350b2a43267d8740ca919ae0.
+
+running uname -a
+Linux 2597b67c-ae0f-42b7-46ff-3e81d09f751e 4.9.46-moby #1 SMP Thu Sep 7 02:53:42 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
+succeeded
+----
+
 read more:
 
 . link:https://concourse.ci/docker-repository.html[documentation]
 . link:https://concourse.ci/hello-world.html[hello-world]
+. link:https://www.youtube.com/watch?v=m_KpkupKITc[watch on youtube]
