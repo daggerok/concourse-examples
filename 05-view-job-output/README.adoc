@@ -2,8 +2,6 @@
 
 == prepare
 
-----
-
 .required environment variable
 [source,bash]
 ----

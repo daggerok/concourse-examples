@@ -1,0 +1,12 @@
+resources:
+- name: pipeline-resources
+  type: git
+  source:
+    uri: https://github.com/daggerok/concourse-examples.git
+jobs:
+- name: pipeline
+  public: true
+  plan:
+  - get: pipeline-resources
+  - task: hola
+    file: pipeline-resources/04-tasks-extracted-into-resources/decomposed-resource.yml

@@ -1,0 +1,168 @@
+= trigger job using concourse API
+
+== prepare
+
+.required environment variable
+[source,bash]
+----
+docker-compose up
+fly -t lite login -c http://0.0.0.0:8080 # concourse / changeme
+fly -t lite set-pipeline -c decomposed-pipeline.yml -p 06
+----
+
+== trigger job using REST API
+
+
+[source,bash]
+----
+#fly -t lite unpause-pipeline -p 06
+
+fly -t lite trigger-job -j 06/pipeline # $pipelineName/$joobName
+started 06/pipeline #1
+
+fly -t lite trigger-job -j 06/pipeline # $pipelineName/$joobName
+started 06/pipeline #1
+
+fly -t lite unpause-pipeline -p 06 # but we must un-pause first
+
+fly -t lite watch -j 06/pipeline
+
+fly -t lite watch -j 06/pipeline
+Cloning into '/tmp/build/get'...
+Fetching HEAD
+b5621dc add 05-view-job-output
+initializing
+running echo who-hoo!
+who-hoo!
+succeeded
+----
+
+.get builds
+[source,bash]
+----
+fly -t lite builds
+id  pipeline/job  build  status     start                     end                       duration
+24  06/pipeline   2      succeeded  2017-09-19@02:11:35+0300  2017-09-19@02:11:41+0300  6s
+23  06/pipeline   1      succeeded  2017-09-19@02:04:37+0300  2017-09-19@02:04:43+0300  6s
+22  05/pipeline   1      succeeded  2017-09-19@01:55:54+0300  2017-09-19@01:55:59+0300  5s
+21  04/pipeline   11     succeeded  2017-09-19@01:46:00+0300  2017-09-19@01:46:08+0300  8s
+20  04/pipeline   10     succeeded  2017-09-19@01:35:20+0300  2017-09-19@01:35:27+0300  7s
+19  04/pipeline   9      aborted    n/a                       2017-09-19@01:19:43+0300  418270h19m43s
+18  04/pipeline   8      errored    2017-09-19@01:15:05+0300  2017-09-19@01:15:05+0300  0s
+17  04/pipeline   7      errored    2017-09-19@01:14:45+0300  2017-09-19@01:14:45+0300  0s
+16  04/pipeline   6      errored    2017-09-19@01:13:43+0300  2017-09-19@01:13:43+0300  0s
+# ...
+----
+
+.get auth token
+[source,bash]
+----
+cat ~/.flyrc
+targets:
+  lite:
+    api: http://0.0.0.0:8080
+    team: main
+    token:
+      type: Bearer
+      value: eyJhbGciOi.....
+----
+
+.store auth header into environment variable
+[source,bash]
+----
+export token="Authorization: Bearer eyJhbGciOi..."
+----
+
+.REST API: get pipeline
+[source,bash]
+----
+http :8080/api/v1/teams/main/pipelines/06 $token
+HTTP/1.1 200 OK
+# skip header from output...
+{
+    "id": 5,
+    "name": "06",
+    "paused": false,
+    "public": false,
+    "team_name": "main",
+    "url": "/teams/main/pipelines/06"
+}
+----
+
+.parse url from response and get pipeline details
+[source,bash]
+----
+http :8080/api/v1/teams/main/pipelines/06/jobs/pipeline $token
+HTTP/1.1 200 OK
+# ...
+{
+    "finished_build": {
+        "api_url": "/api/v1/builds/24",
+        "end_time": 1505776301,
+        "id": 24,
+        "job_name": "pipeline",
+        "name": "2",
+        "pipeline_name": "06",
+        "start_time": 1505776295,
+        "status": "succeeded",
+        "team_name": "main",
+        "url": "/teams/main/pipelines/06/jobs/pipeline/builds/2"
+    },
+    "groups": [],
+    "id": 4,
+    "inputs": [
+        {
+            "name": "pipeline-resources",
+            "resource": "pipeline-resources",
+            "trigger": false
+        }
+    ],
+    "name": "pipeline",
+    "next_build": null,
+    "outputs": [],
+    "url": "/teams/main/pipelines/06/jobs/pipeline"
+}
+----
+
+.trigger build using REST API
+[source,bash]
+----
+http post :8080/api/v1/teams/main/pipelines/06/jobs/pipeline $token
+----
+
+.watch
+[source,bash]
+----
+fly -t lite watch -j 06/pipeline
+initializing
+Pulling ubuntu@sha256:60f835698ea19e8d9d3a59e68fb96fb35bc43e745941cb2ea9eaf4ba3029ed8a...
+sha256:60f835698ea19e8d9d3a59e68fb96fb35bc43e745941cb2ea9eaf4ba3029ed8a: Pulling from library/ubuntu
+9fb6c798fa41: Pulling fs layer
+3b61febd4aef: Pulling fs layer
+9d99b9777eb0: Pulling fs layer
+d010c8cf75d7: Pulling fs layer
+7fac07fb303e: Pulling fs layer
+d010c8cf75d7: Waiting
+7fac07fb303e: Waiting
+3b61febd4aef: Download complete
+d010c8cf75d7: Verifying Checksum
+d010c8cf75d7: Download complete
+7fac07fb303e: Download complete
+9fb6c798fa41: Verifying Checksum
+9fb6c798fa41: Download complete
+9fb6c798fa41: Pull complete
+3b61febd4aef: Pull complete
+9d99b9777eb0: Pull complete
+d010c8cf75d7: Pull complete
+7fac07fb303e: Pull complete
+Digest: sha256:60f835698ea19e8d9d3a59e68fb96fb35bc43e745941cb2ea9eaf4ba3029ed8a
+Status: Downloaded newer image for ubuntu@sha256:60f835698ea19e8d9d3a59e68fb96fb35bc43e745941cb2ea9eaf4ba3029ed8a
+
+Successfully pulled ubuntu@sha256:60f835698ea19e8d9d3a59e68fb96fb35bc43e745941cb2ea9eaf4ba3029ed8a.
+
+running echo who-hoo!
+who-hoo!
+succeeded
+----
+
+. link:https://www.youtube.com/watch?v=m_KpkupKITc[watch on youtube]
