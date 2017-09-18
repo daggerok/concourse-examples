@@ -1,3 +1,5 @@
 = concourse examples
 
+This repository contains examples how to getting started with concourse and some pipeline examples
+
 link:01-getting-started/[getting started]

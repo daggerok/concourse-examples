@@ -295,9 +295,15 @@ jobs:
         args: ["hey, y0!"]
 ----
 
-touch navi-pipeline.yml
+.tag navi-pipeline.yml
+[source,bash]
 ----
 fly -t lite set-pipeline -p hello-world-pipeline -c navi-pipeline.yml
+----
+
+.output
+[source,yml]
+----
 resources:
   resource every-1m has been added:
     name: every-1m
@@ -343,6 +349,8 @@ jobs:
 apply configuration? [yN]: y
 configuration updated
 ----
+
+again, go to UI and check it
 
 read more:
 
