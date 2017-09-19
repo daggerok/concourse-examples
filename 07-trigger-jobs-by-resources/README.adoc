@@ -2,16 +2,21 @@
 
 == prepare
 
+we wanna build evry 15 seconds if git repo was updated without any web hooks...
+
 .trigger-by-resources-pipeline.yml
 [source,bash]
 ----
-# ...
+resources:
+- name: pipeline-resources
+  check_every: 15s
+  # ...
 jobs:
 - name: pipeline
   plan:
   - get: pipeline-resources
     trigger: true
-# ...
+  # ...
 ----
 
 .spinup concourse, login and setup pipeline
