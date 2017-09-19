@@ -13,5 +13,6 @@ run:
     apk update
     apk upgrade
     apk add --no-cache bash git
-#    git clone https://github.com/daggerok/spring-boot-derby-create-drop-example.git app
+    git clone https://github.com/daggerok/spring-boot-derby-create-drop-example.git app
+    ls -lah .
 #    app/gradlew -b app/build.gradle clean build
