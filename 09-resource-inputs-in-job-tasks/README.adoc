@@ -6,10 +6,10 @@
 [source,bash]
 ----
 docker-compose up
-fly -t lite login -c http://0.0.0.0:8080 # concourse / changeme
-fly -t lite set-pipeline -c pipeline.yml -p 09
-fly -t lite unpause-pipeline -p 09
-fly -t lite trigger-job -j 09/pipeline
+fly -t lite l -c http://0.0.0.0:8080 # concourse / changeme
+fly -t lite sp -p 09 -c pipeline.yml
+fly -t lite up -p 09
+fly -t lite tj -j 09/pipeline
 ----
 
 == playground
