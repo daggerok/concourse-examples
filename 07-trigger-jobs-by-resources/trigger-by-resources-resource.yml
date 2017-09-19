@@ -6,4 +6,4 @@ image_resource:
 
 run:
   path: echo
-  args: [bye-bye web hooks...]
+  args: [bye-bye web hooks... finally]

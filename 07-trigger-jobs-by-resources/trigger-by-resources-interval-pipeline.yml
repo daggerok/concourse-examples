@@ -1,0 +1,14 @@
+resources:
+- name: pipeline-resources
+  type: git
+  source:
+    interval: 1m
+    uri: https://github.com/daggerok/concourse-examples.git
+jobs:
+- name: pipeline
+  public: true
+  plan:
+  - get: pipeline-resources
+    trigger: true
+  - task: hola
+    file: pipeline-resources/07-trigger-jobs-by-resources/trigger-by-resources-resource.yml

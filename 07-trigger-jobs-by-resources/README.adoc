@@ -2,9 +2,9 @@
 
 == prepare
 
-we wanna build evry 15 seconds if git repo was updated without any web hooks...
+we wanna build every 15 seconds if git repo was updated without any web hooks...
 
-.trigger-by-resources-pipeline.yml
+.trigger-by-resources-pipeline.yml using `check_every: 5s`
 [source,bash]
 ----
 resources:
@@ -35,6 +35,49 @@ fly -t lite trigger-job -j 07/pipeline
 [source,bash]
 ----
 fly -t lite watch -j 07/pipeline
+Cloning into '/tmp/build/get'...
+Fetching HEAD
+503ddcb one more update for trigger build
+initializing
+running echo bye-bye web hooks...
+bye-bye web hooks...
+succeeded
+----
+
+== other playground
+
+.trigger-by-resources-interval-pipeline.yml using `interval: 5s`
+[source,bash]
+----
+resources:
+- name: pipeline-resources
+  type: git
+  source:
+    interval: 5s
+----
+
+[source,bash]
+----
+fly -t lite set-pipeline -c trigger-by-resources-interval-pipeline.yml -p 07
+resources:
+  resource pipeline-resources has changed:
+    name: pipeline-resources
+    type: git
+    source:
+      interval: 5s
+      uri: https://github.com/daggerok/concourse-examples.git
+    check_every: 15s
+
+apply configuration? [yN]: y
+configuration updated
+----
+
+. update args to [bye-bye web hooks... finally]
+. commit to repo
+
+.and check again
+[source,bash]
+----
 fly -t lite watch -j 07/pipeline
 Cloning into '/tmp/build/get'...
 Fetching HEAD
