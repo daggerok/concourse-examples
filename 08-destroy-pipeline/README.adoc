@@ -17,6 +17,10 @@ fly -t lite trigger-job -j 08/pipeline
 [source,bash]
 ----
 fly -t lite destroy-pipeline -p 08
+!!! this will remove all data for pipeline `08`
+
+are you sure? [yN]: y
+`08` deleted
 ----
 
 . link:https://www.youtube.com/watch?v=m_KpkupKITc[watch on youtube]

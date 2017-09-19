@@ -1,0 +1,21 @@
+= Using resource inputs in job tasks
+
+== prepare
+
+.bootstrap
+[source,bash]
+----
+docker-compose up
+fly -t lite login -c http://0.0.0.0:8080 # concourse / changeme
+fly -t lite set-pipeline -c pipeline.yml -p 09
+fly -t lite unpause-pipeline -p 09
+fly -t lite trigger-job -j 09/pipeline
+----
+
+== playground
+
+[source,bash]
+----
+----
+
+. link:https://www.youtube.com/watch?v=m_KpkupKITc[watch on youtube]

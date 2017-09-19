@@ -1,0 +1,21 @@
+resources:
+- name: pipeline-resources
+  type: git
+  source:
+    uri: https://github.com/daggerok/concourse-examples.git
+  check_every: 5s
+- name: pipeline-app
+  type: git
+  source:
+    uri: https://github.com/daggerok/spring-boot-derby-create-drop-example.git
+  check_every: 5s
+jobs:
+- name: pipeline
+  public: true
+  plan:
+  - get: pipeline-resources
+    trigger: true
+  - get: pipeline-app
+    trigger: true
+  - task: hola
+    file: pipeline-resources/09-resource-inputs-in-job-tasks/resources.yml

@@ -1,0 +1,17 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: openjdk, tag: 8u131-jdk-alpine}
+#  source: {repository: gradle, tag: 4.1.0-jdk8-alpine}
+
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    apk update
+    apk upgrade
+    apk add --no-cache bash git
+#    git clone https://github.com/daggerok/spring-boot-derby-create-drop-example.git app
+#    app/gradlew -b app/build.gradle clean build
