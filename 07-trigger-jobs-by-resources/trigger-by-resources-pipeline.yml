@@ -3,7 +3,7 @@ resources:
   type: git
   source:
     uri: https://github.com/daggerok/concourse-examples.git
-  check_every: 2m
+  check_every: 15s
 jobs:
 - name: pipeline
   public: true
