@@ -16,6 +16,25 @@ fly -t lite tj -j 09/pipeline
 
 [source,bash]
 ----
+vim README.adoc # do some changes...
+git add .
+git commit -am "commit repo for trigger build"
+git push origin master
+fly -t lite w -j 09/pipeline
+Cloning into '/tmp/build/get'...
+Fetching HEAD
+3b3c44a short fly command args
+initializing
+running sh -exc apk update
+apk upgrade
+apk add --no-cache bash git
+# ...
+:build
+
+BUILD SUCCESSFUL
+
+Total time: 1 mins 23.952 secs
+succeeded
 ----
 
 . link:https://www.youtube.com/watch?v=m_KpkupKITc[watch on youtube]
