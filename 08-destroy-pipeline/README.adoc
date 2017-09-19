@@ -1,0 +1,22 @@
+= destroy pipeline
+
+== prepare
+
+.spinup concourse, login and setup pipeline
+[source,bash]
+----
+docker-compose up
+fly -t lite login -c http://0.0.0.0:8080 # concourse / changeme
+fly -t lite set-pipeline -c pipeline.yml -p 08
+fly -t lite unpause-pipeline -p 08
+fly -t lite trigger-job -j 08/pipeline
+----
+
+== playground
+
+[source,bash]
+----
+fly -t lite destroy-pipeline -p 08
+----
+
+. link:https://www.youtube.com/watch?v=m_KpkupKITc[watch on youtube]

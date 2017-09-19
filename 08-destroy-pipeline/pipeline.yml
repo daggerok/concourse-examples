@@ -2,8 +2,8 @@ resources:
 - name: pipeline-resources
   type: git
   source:
-    interval: 30s
     uri: https://github.com/daggerok/concourse-examples.git
+  check_every: 15s
 jobs:
 - name: pipeline
   public: true
@@ -11,4 +11,4 @@ jobs:
   - get: pipeline-resources
     trigger: true
   - task: hola
-    file: pipeline-resources/07-trigger-jobs-by-resources/trigger-by-resources-resource.yml
+    file: pipeline-resources/08-destroy-pipeline/resource.yml

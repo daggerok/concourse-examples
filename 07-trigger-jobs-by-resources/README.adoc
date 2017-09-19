@@ -5,7 +5,7 @@
 we wanna build every 15 seconds if git repo was updated without any web hooks...
 
 .trigger-by-resources-pipeline.yml using `check_every: 5s`
-[source,bash]
+[source,yml]
 ----
 resources:
 - name: pipeline-resources
@@ -47,7 +47,7 @@ succeeded
 == other playground
 
 .trigger-by-resources-interval-pipeline.yml using `interval: 5s`
-[source,bash]
+[source,yml]
 ----
 resources:
 - name: pipeline-resources
