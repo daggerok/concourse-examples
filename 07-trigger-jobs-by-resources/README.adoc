@@ -26,21 +26,23 @@ docker-compose up
 fly -t lite login -c http://0.0.0.0:8080 # concourse / changeme
 fly -t lite set-pipeline -c trigger-by-resources-pipeline.yml -p 07
 fly -t lite unpause-pipeline -p 07
+fly -t lite trigger-job -j 07/pipeline
 ----
 
 == playground
 
-.check web UI if build was triggered
-[source,bash]
-----
-fly -t lite trigger-job -j 07/pipeline
-fly -t lite watch -j 07/pipeline
-----
-
-.now go to repo and update nneded
+.now lets update resource args to `[bye-bye web hooks...]` and watch how build will be trigger
 [source,bash]
 ----
 fly -t lite watch -j 07/pipeline
+fly -t lite watch -j 07/pipeline
+Cloning into '/tmp/build/get'...
+Fetching HEAD
+503ddcb one more update for trigger build
+initializing
+running echo bye-bye web hooks...
+bye-bye web hooks...
+succeeded
 ----
 
 . link:https://www.youtube.com/watch?v=m_KpkupKITc[watch on youtube]
