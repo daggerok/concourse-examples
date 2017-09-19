@@ -1,4 +1,4 @@
-= Using resource inputs in job tasks
+= spring-boot combined custom pipeline
 
 == prepare
 

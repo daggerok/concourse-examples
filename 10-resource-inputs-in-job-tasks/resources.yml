@@ -14,10 +14,6 @@ run:
   args:
   - -exc
   - |
-    ls -lah .
-    apk update
-    apk upgrade
-    apk add --no-cache bash git
-    #git clone https://github.com/daggerok/spring-boot-derby-create-drop-example.git app
-    #bash app/gradlew -b app/build.gradle wrapper --gradle-version==4.1
-    bash app/gradlew -b app/build.gradle clean build
+    cd app
+    apk add --no-cache bash
+    bash gradlew clean build
