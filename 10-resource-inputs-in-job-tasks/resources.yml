@@ -1,0 +1,23 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: openjdk, tag: 8u131-jdk-alpine}
+
+inputs:
+- name: pipeline-resources
+- name: pipeline-app
+  path: app
+
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    ls -lah .
+    apk update
+    apk upgrade
+    apk add --no-cache bash git
+    #git clone https://github.com/daggerok/spring-boot-derby-create-drop-example.git app
+    #bash app/gradlew -b app/build.gradle wrapper --gradle-version==4.1
+    bash app/gradlew -b app/build.gradle clean build

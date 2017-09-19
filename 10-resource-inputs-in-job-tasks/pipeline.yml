@@ -18,4 +18,4 @@ jobs:
   - get: pipeline-app
     trigger: true
   - task: hola
-    file: pipeline-resources/09-resource-inputs-in-job-tasks/resources.yml
+    file: pipeline-resources/10-resource-inputs-in-job-tasks/resources.yml

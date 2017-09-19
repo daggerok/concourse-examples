@@ -1,0 +1,41 @@
+= spring-boot pipeline
+
+== prepare
+
+.bootstrap
+[source,bash]
+----
+docker-compose up
+fly -t lite l -c http://0.0.0.0:8080 # concourse / changeme
+fly -t lite sp -p 10 -c pipeline.yml
+fly -t lite up -p 10
+fly -t lite tj -j 10/pipeline
+----
+
+== playground
+
+[source,bash]
+----
+vim README.adoc # do some changes...
+git add .
+git commit -am "commit repo for trigger build"
+git push origin master
+fly -t lite w -j 10/pipeline
+Cloning into '/tmp/build/get'...
+Fetching HEAD
+3b3c44a short fly command args
+initializing
+running sh -exc apk update
+apk upgrade
+apk add --no-cache bash git
+# ...
+:build
+
+BUILD SUCCESSFUL
+
+Total time: 1 mins 23.952 secs
+succeeded
+----
+
+. link:https://www.youtube.com/watch?v=m_KpkupKITc[watch on youtube]
+. link:https://devhub.io/repos/jamesjoshuahill-concourse-spring-boot-maven[TODO]
