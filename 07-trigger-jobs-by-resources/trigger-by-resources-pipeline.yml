@@ -8,5 +8,6 @@ jobs:
   public: true
   plan:
   - get: pipeline-resources
+    trigger: true
   - task: hola
-    file: pipeline-resources/04-tasks-extracted-into-resources/decomposed-resource.yml
+    file: pipeline-resources/07-trigger-jobs-by-resources/trigger-by-resources-resource.yml

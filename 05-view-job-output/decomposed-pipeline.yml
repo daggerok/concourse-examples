@@ -9,4 +9,4 @@ jobs:
   plan:
   - get: pipeline-resources
   - task: hola
-    file: pipeline-resources/04-tasks-extracted-into-resources/decomposed-resource.yml
+    file: pipeline-resources/05-view-job-output/decomposed-resource.yml

@@ -2,7 +2,7 @@
 
 == prepare
 
-.required environment variable
+.spinup concourse and login
 [source,bash]
 ----
 docker-compose up

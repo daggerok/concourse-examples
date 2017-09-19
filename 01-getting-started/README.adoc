@@ -2,7 +2,7 @@
 
 == setup
 
-.spinup docker
+.install via docker-copose
 [source,bash]
 ----
 vim docker-compose.yml
@@ -70,7 +70,7 @@ cp ./keys/web/tsa_host_key.pub ./keys/worker
 export CONCOURSE_EXTERNAL_URL=http://0.0.0.0:8080
 ----
 
-.go!
+.spinup concourse
 [source,bash]
 ----
 docker-compose up
