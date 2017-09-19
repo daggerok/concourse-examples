@@ -2,7 +2,7 @@
 
 == prepare
 
-.update pipeline to this
+.trigger-by-resources-pipeline.yml
 [source,bash]
 ----
 # ...
@@ -19,7 +19,7 @@ jobs:
 ----
 docker-compose up
 fly -t lite login -c http://0.0.0.0:8080 # concourse / changeme
-fly -t lite set-pipeline -c decomposed-pipeline.yml -p 07
+fly -t lite set-pipeline -c trigger-by-resources-pipeline.yml -p 07
 fly -t lite unpause-pipeline -p 07
 ----
 
