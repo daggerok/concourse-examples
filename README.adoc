@@ -2,18 +2,18 @@
 
 This repository contains examples how to getting started with concourse and some pipeline examples
 
-link:01-getting-started/[getting started]
-link:02-task-inputs/[tasks inputs]
-link:03-pipelines/[pipelines]
-link:04-tasks-extracted-into-resources/[git tasks extracted into resources]
-link:05-view-job-output/[watch for job and view job output]
-link:06-trigger-jobs-using-API/[trigger job using concourse API]
-link:07-trigger-jobs-by-resources/[trigger job with resources]
-link:08-destroy-pipeline/[destroy pipeline]
-link:09-spring-boot-pipeline/[spring-boot app pipeline]
-link:10-resource-inputs-in-job-tasks/[resource inputs in job tasks]
+* link:01-getting-started/[getting started]
+* link:02-task-inputs/[tasks inputs]
+* link:03-pipelines/[pipelines]
+* link:04-tasks-extracted-into-resources/[git tasks extracted into resources]
+* link:05-view-job-output/[watch for job and view job output]
+* link:06-trigger-jobs-using-API/[trigger job using concourse API]
+* link:07-trigger-jobs-by-resources/[trigger job with resources]
+* link:08-destroy-pipeline/[destroy pipeline]
+* link:09-spring-boot-pipeline/[spring-boot app pipeline]
+* link:10-resource-inputs-in-job-tasks/[resource inputs in job tasks]
 
 == resources
 
-link:https://concoursetutorial.com/[Concourse Tutorial]
-link:https://concourse-ci.org/[Concourse CI]
+* link:https://concoursetutorial.com/[Concourse Tutorial]
+* link:https://concourse-ci.org/[Concourse CI]
