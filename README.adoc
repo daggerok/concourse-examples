@@ -12,3 +12,8 @@ link:07-trigger-jobs-by-resources/[trigger job with resources]
 link:08-destroy-pipeline/[destroy pipeline]
 link:09-spring-boot-pipeline/[spring-boot app pipeline]
 link:10-resource-inputs-in-job-tasks/[resource inputs in job tasks]
+
+== resources
+
+link:https://concoursetutorial.com/[Concourse Tutorial]
+link:https://concourse-ci.org/[Concourse CI]
